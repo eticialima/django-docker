@@ -1,0 +1,30 @@
+# Environment
+.env
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Django
+*.sqlite3
+staticfiles/
+
+# Local Docker data
+data/postgres/
+data/staticfiles/
+data/media/*
+!data/media/.gitkeep
+!data/.gitkeep
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/

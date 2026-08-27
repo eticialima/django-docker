@@ -1,0 +1,1 @@
+docker exec -it $(docker ps -q --filter "name=django_base_web") /bin/bash -c "python manage.py $1"

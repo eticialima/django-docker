@@ -1,0 +1,39 @@
+services:
+  db:
+    image: postgres:18
+    container_name: django_base_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-django_base}
+      POSTGRES_USER: ${POSTGRES_USER:-django}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-django}
+    ports:
+      - "${POSTGRES_EXTERNAL_PORT:-5432}:5432"
+    volumes:
+      - ./data/postgres:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-django} -d ${POSTGRES_DB:-django_base}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build: .
+    container_name: django_base_web
+    restart: unless-stopped
+    env_file:
+      - .env
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             uvicorn DjangoServer.asgi:application --host 0.0.0.0 --port 8000 --reload"
+    ports:
+      - "${DJANGO_PORT:-8000}:8000"
+    volumes:
+      - ./DjangoServer:/app
+      - ./pyproject.toml:/app/pyproject.toml:ro
+      - ./.pre-commit-config.yaml:/app/.pre-commit-config.yaml:ro
+      - ./data/media:/app/media
+    depends_on:
+      db:
+        condition: service_healthy
