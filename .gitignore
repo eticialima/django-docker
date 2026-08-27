@@ -18,11 +18,7 @@ htmlcov/
 staticfiles/
 
 # Local Docker data
-data/postgres/
-data/staticfiles/
-data/media/*
-!data/media/.gitkeep
-!data/.gitkeep
+data/
 
 # OS / editors
 .DS_Store
